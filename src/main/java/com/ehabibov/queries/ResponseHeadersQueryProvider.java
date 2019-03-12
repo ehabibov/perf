@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ResponseHeadersQueryProvider implements Iterable {
+public class ResponseHeadersQueryProvider extends AbstractQueryProvider implements Iterable {
 
     private String datasourcePath;
 
-    public ResponseHeadersQueryProvider(String datasourcePath) {
+    public ResponseHeadersQueryProvider(String endpoint, String datasourcePath) {
+        super(endpoint);
         this.datasourcePath = datasourcePath;
     }
 
@@ -20,7 +21,7 @@ public class ResponseHeadersQueryProvider implements Iterable {
         List<JHttpQuery> queries = new ArrayList<>();
         queries.add(new JHttpQuery()
                 .get()
-                .path("response-headers")
+                .path(endpoint)
                 .queryParams(DatasourceReader.toMap(datasourcePath))
         );
         return queries.iterator();

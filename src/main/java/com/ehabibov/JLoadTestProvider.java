@@ -38,12 +38,14 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
 
     @Bean(name = "loadTest1")
     public ArrayList<JLoadTest> loadTest1(){
+        String host = getTestPropertyValue("host");
+        String endpoint = getTestPropertyValue("test.1.load.scenario.endpoint");
         int users = Integer.valueOf(getTestPropertyValue("test.1.load.scenario.virtual.users"));
         int iterations = Integer.valueOf(getTestPropertyValue("test.1.load.scenario.termination.iterations"));
         long maxDuration = Long.valueOf(getTestPropertyValue("test.1.load.scenario.termination.max.duration.seconds"));
 
-        JTestDefinition definition = JTestDefinition.builder(Id.of("td1"), new EndpointsProvider())
-                .withQueryProvider(new GetRequestQueryProvider())
+        JTestDefinition definition = JTestDefinition.builder(Id.of("td1"), new EndpointsProvider(host))
+                .withQueryProvider(new GetRequestQueryProvider(endpoint))
                 .addValidator(JHttpResponseStatusValidatorProvider.of("2.."))
                 .addValidator(HttpResponseContentTypeHeaderValidatorProvider.of(MediaType.APPLICATION_JSON))
                 .addValidator(HttpResponseContentBodyValidatorProvider.of(Content.JSON))
@@ -63,13 +65,15 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
 
     @Bean(name = "loadTest2")
     public ArrayList<JLoadTest> loadTest2(){
+        String host = getTestPropertyValue("host");
+        String endpoint = getTestPropertyValue("test.2.load.scenario.endpoint");
         int users = Integer.valueOf(getTestPropertyValue("test.2.load.scenario.users.group.virtual.users.per.load.profile"));
         int invocationsDelay = Integer.valueOf(getTestPropertyValue("test.2.load.scenario.invocations.delay.millisecs"));
         int startDelta = Integer.valueOf(getTestPropertyValue("test.2.load.scenario.users.group.start.delay.delta.seconds"));
         long maxDuration = Long.valueOf(getTestPropertyValue("test.2.load.scenario.termination.max.duration.seconds"));
 
-        JTestDefinition definition = JTestDefinition.builder(Id.of("td2"), new EndpointsProvider())
-                .withQueryProvider(new XmlQueryProvider())
+        JTestDefinition definition = JTestDefinition.builder(Id.of("td2"), new EndpointsProvider(host))
+                .withQueryProvider(new XmlQueryProvider(endpoint))
                 .addValidator(JHttpResponseStatusValidatorProvider.of("2.."))
                 .addValidator(HttpResponseContentTypeHeaderValidatorProvider.of(MediaType.APPLICATION_XML))
                 .addValidator(HttpResponseContentBodyValidatorProvider.of(Content.XML))
@@ -99,6 +103,8 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
 
     @Bean(name = "loadTest3")
     public ArrayList<JLoadTest> loadTest3(){
+        String host = getTestPropertyValue("host");
+        String endpoint = getTestPropertyValue("test.3.load.scenario.endpoint");
         long userGroupOneVirtualUsers = Long.valueOf(getTestPropertyValue("test.3.load.scenario.users.group.1.virtual.users"));
         int userGroupOneDelay = Integer.valueOf(getTestPropertyValue("test.3.load.scenario.users.group.1.invocations.delay.millisecs"));
         long maxDuration = Long.valueOf(getTestPropertyValue("test.3.load.scenario.termination.max.duration.seconds"));
@@ -108,8 +114,8 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
 
         String datasource = getTestPropertyValue("test.3.load.scenario.datasource.path");
 
-        JTestDefinition definition = JTestDefinition.builder(Id.of("td3"), new EndpointsProvider())
-                .withQueryProvider(new ResponseHeadersQueryProvider(datasource))
+        JTestDefinition definition = JTestDefinition.builder(Id.of("td3"), new EndpointsProvider(host))
+                .withQueryProvider(new ResponseHeadersQueryProvider(endpoint, datasource))
                 .addValidator(JHttpResponseStatusValidatorProvider.of("2.."))
                 .addValidator(HttpResponseContentTypeHeaderValidatorProvider.of(MediaType.APPLICATION_JSON))
                 .addValidator(HttpResponseContentBodyValidatorProvider.of(Content.JSON))

@@ -28,7 +28,7 @@ public class HttpResponseContentTypeHeaderValidatorProvider implements ResponseV
 
             @Override
             public String getName() {
-                return String.format("%s response content type header validator", mediaType);
+                return String.format("%s response content type header validator", mediaType.getType());
             }
 
             @Override

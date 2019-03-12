@@ -8,10 +8,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class EndpointsProvider implements Iterable {
+
     private List<JHttpEndpoint> endpoints = new ArrayList<>();
 
-    public EndpointsProvider() {
-        JHttpEndpoint httpEndpoint = new JHttpEndpoint(URI.create("http://httpbin.org"));
+    public EndpointsProvider(String endpoint) {
+        JHttpEndpoint httpEndpoint = new JHttpEndpoint(URI.create(endpoint));
         endpoints.add(httpEndpoint);
     }
     
@@ -19,5 +20,7 @@ public class EndpointsProvider implements Iterable {
     public Iterator<JHttpEndpoint> iterator() {
         return endpoints.iterator();
     }
+
+
 
 }
