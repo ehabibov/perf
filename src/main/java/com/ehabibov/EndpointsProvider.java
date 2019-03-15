@@ -21,6 +21,4 @@ public class EndpointsProvider implements Iterable {
         return endpoints.iterator();
     }
 
-
-
 }

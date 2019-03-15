@@ -5,36 +5,27 @@ import com.ehabibov.queries.GetRequestQueryProvider;
 import com.ehabibov.queries.ResponseHeadersQueryProvider;
 import com.ehabibov.queries.XmlQueryProvider;
 import com.ehabibov.util.JaggerPropertiesProvider;
-import com.ehabibov.validators.Content;
-import com.ehabibov.validators.HttpQueryValidatorProvider;
-import com.ehabibov.validators.HttpResponseContentBodyValidatorProvider;
-import com.ehabibov.validators.HttpResponseContentTypeHeaderValidatorProvider;
+import com.ehabibov.validators.*;
 import com.griddynamics.jagger.engine.e1.collector.JHttpResponseStatusValidatorProvider;
 import com.griddynamics.jagger.user.test.configurations.JLoadTest;
 import com.griddynamics.jagger.user.test.configurations.JTestDefinition;
 import com.griddynamics.jagger.user.test.configurations.auxiliary.Id;
-import com.griddynamics.jagger.user.test.configurations.load.JLoadProfile;
-import com.griddynamics.jagger.user.test.configurations.load.JLoadProfileInvocation;
-import com.griddynamics.jagger.user.test.configurations.load.JLoadProfileUserGroups;
-import com.griddynamics.jagger.user.test.configurations.load.JLoadProfileUsers;
-import com.griddynamics.jagger.user.test.configurations.load.auxiliary.InvocationCount;
-import com.griddynamics.jagger.user.test.configurations.load.auxiliary.NumberOfUsers;
-import com.griddynamics.jagger.user.test.configurations.load.auxiliary.ThreadCount;
-import com.griddynamics.jagger.user.test.configurations.termination.JTerminationCriteria;
-import com.griddynamics.jagger.user.test.configurations.termination.JTerminationCriteriaBackground;
-import com.griddynamics.jagger.user.test.configurations.termination.JTerminationCriteriaDuration;
-import com.griddynamics.jagger.user.test.configurations.termination.JTerminationCriteriaIterations;
-import com.griddynamics.jagger.user.test.configurations.termination.auxiliary.DurationInSeconds;
-import com.griddynamics.jagger.user.test.configurations.termination.auxiliary.IterationsNumber;
-import com.griddynamics.jagger.user.test.configurations.termination.auxiliary.MaxDurationInSeconds;
+import com.griddynamics.jagger.user.test.configurations.limits.JLimit;
+import com.griddynamics.jagger.user.test.configurations.limits.JLimitVsRefValue;
+import com.griddynamics.jagger.user.test.configurations.limits.auxiliary.JMetricName;
+import com.griddynamics.jagger.user.test.configurations.limits.auxiliary.RefValue;
+import com.griddynamics.jagger.user.test.configurations.load.*;
+import com.griddynamics.jagger.user.test.configurations.load.auxiliary.*;
+import com.griddynamics.jagger.user.test.configurations.termination.*;
+import com.griddynamics.jagger.user.test.configurations.termination.auxiliary.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class JLoadTestProvider extends JaggerPropertiesProvider {
-
 
     @Bean(name = "loadTest1")
     public ArrayList<JLoadTest> loadTest1(){

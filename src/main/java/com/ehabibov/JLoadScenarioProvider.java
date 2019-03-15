@@ -1,9 +1,7 @@
 package com.ehabibov;
 
 import com.ehabibov.util.JaggerPropertiesProvider;
-import com.griddynamics.jagger.user.test.configurations.JLoadScenario;
-import com.griddynamics.jagger.user.test.configurations.JLoadTest;
-import com.griddynamics.jagger.user.test.configurations.JParallelTestsGroup;
+import com.griddynamics.jagger.user.test.configurations.*;
 import com.griddynamics.jagger.user.test.configurations.auxiliary.Id;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
