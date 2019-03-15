@@ -41,14 +41,15 @@ public class HttpResponseBodySizeInvocationListener extends ServicesAware implem
                 if (invocationInfo.getResult() != null) {
                     byte[] responseBody = (byte[]) invocationInfo.getResult().getBody();
                     getMetricService().saveValue(metricName, responseBody.length);
+
                 }
             }
 
             @Override
-            public void onFail(InvocationInfo invocationInfo, InvocationException e) { }
+            public void onFail(InvocationInfo<JHttpQuery, JHttpResponse, JHttpEndpoint> invocationInfo, InvocationException e) { }
 
             @Override
-            public void onError(InvocationInfo invocationInfo, Throwable error) { }
+            public void onError(InvocationInfo<JHttpQuery, JHttpResponse, JHttpEndpoint> invocationInfo, Throwable error) { }
             };
         }
     }

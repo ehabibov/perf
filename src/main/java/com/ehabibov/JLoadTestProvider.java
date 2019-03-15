@@ -47,10 +47,20 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
         JTestDefinition definition = JTestDefinition.builder(Id.of("td1"), new EndpointsProvider(host))
                 .withQueryProvider(new GetRequestQueryProvider(endpoint))
                 .addValidator(JHttpResponseStatusValidatorProvider.of("2.."))
-                .addValidator(HttpResponseContentTypeHeaderValidatorProvider.of(MediaType.APPLICATION_JSON))
-                .addValidator(HttpResponseContentBodyValidatorProvider.of(Content.JSON))
+                .addValidator(new HttpResponseJSONContentTypeHeaderValidatorProvider())
+                .addValidator(new HttpResponseJSONContentBodyValidatorProvider())
                 .addListener(new HttpResponseBodySizeInvocationListener())
                 .build();
+
+        JLimit successRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_OK, RefValue.of(1D))
+                .build();
+        JLimit failRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_FAILS, RefValue.of(0D))
+                .build();
+        JLimit contentTypeHeader = JLimitVsRefValue.builder(HttpResponseJSONContentTypeHeaderValidatorProvider.getName(), RefValue.of(1D))
+                .build();
+        JLimit contentBody = JLimitVsRefValue.builder(HttpResponseJSONContentBodyValidatorProvider.getName(), RefValue.of(1D))
+                .build();
+        List<JLimit> limits = Arrays.asList(successRateLimit, failRateLimit, contentTypeHeader, contentBody);
 
         JLoadProfile loadProfile = JLoadProfileInvocation.builder(InvocationCount.of(iterations), ThreadCount.of(users))
                 .build();
@@ -59,7 +69,9 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
                 IterationsNumber.of(iterations), MaxDurationInSeconds.of(maxDuration));
 
         return new ArrayList<JLoadTest>(){{
-            add(JLoadTest.builder(Id.of("load_test_1"), definition, loadProfile, termination).build());
+            add(JLoadTest.builder(Id.of("load_test_1"), definition, loadProfile, termination)
+                    .withLimits(limits)
+                    .build());
         }};
     }
 
@@ -75,10 +87,20 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
         JTestDefinition definition = JTestDefinition.builder(Id.of("td2"), new EndpointsProvider(host))
                 .withQueryProvider(new XmlQueryProvider(endpoint))
                 .addValidator(JHttpResponseStatusValidatorProvider.of("2.."))
-                .addValidator(HttpResponseContentTypeHeaderValidatorProvider.of(MediaType.APPLICATION_XML))
-                .addValidator(HttpResponseContentBodyValidatorProvider.of(Content.XML))
+                .addValidator(new HttpResponseXMLContentTypeHeaderValidatorProvider())
+                .addValidator(new HttpResponseXMLContentBodyValidatorProvider())
                 .addListener(new HttpResponseBodySizeInvocationListener())
                 .build();
+
+        JLimit successRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_OK, RefValue.of(1D))
+                .build();
+        JLimit failRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_FAILS, RefValue.of(0D))
+                .build();
+        JLimit contentTypeHeader = JLimitVsRefValue.builder(HttpResponseXMLContentTypeHeaderValidatorProvider.getName(), RefValue.of(1D))
+                .build();
+        JLimit contentBody = JLimitVsRefValue.builder(HttpResponseXMLContentBodyValidatorProvider.getName(), RefValue.of(1D))
+                .build();
+        List<JLimit> limits = Arrays.asList(successRateLimit, failRateLimit, contentTypeHeader, contentBody);
 
         JLoadProfileUsers userProfile1 = JLoadProfileUsers.builder(NumberOfUsers.of(users))
                 .withStartDelayInSeconds(startDelta)
@@ -97,7 +119,9 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
         JTerminationCriteria termination = JTerminationCriteriaDuration.of(DurationInSeconds.of(maxDuration));
 
         return new ArrayList<JLoadTest>(){{
-            add(JLoadTest.builder(Id.of("load_test_2"), definition, loadProfile, termination).build());
+            add(JLoadTest.builder(Id.of("load_test_2"), definition, loadProfile, termination)
+                    .withLimits(limits)
+                    .build());
         }};
     }
 
@@ -117,11 +141,21 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
         JTestDefinition definition = JTestDefinition.builder(Id.of("td3"), new EndpointsProvider(host))
                 .withQueryProvider(new ResponseHeadersQueryProvider(endpoint, datasource))
                 .addValidator(JHttpResponseStatusValidatorProvider.of("2.."))
-                .addValidator(HttpResponseContentTypeHeaderValidatorProvider.of(MediaType.APPLICATION_JSON))
-                .addValidator(HttpResponseContentBodyValidatorProvider.of(Content.JSON))
+                .addValidator(new HttpResponseJSONContentTypeHeaderValidatorProvider())
+                .addValidator(new HttpResponseJSONContentBodyValidatorProvider())
                 .addValidator(HttpQueryValidatorProvider.of(datasource))
                 .addListener(new HttpResponseBodySizeInvocationListener())
                 .build();
+
+        JLimit successRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_OK, RefValue.of(1D))
+                .build();
+        JLimit failRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_FAILS, RefValue.of(0D))
+                .build();
+        JLimit contentTypeHeader = JLimitVsRefValue.builder(HttpResponseJSONContentTypeHeaderValidatorProvider.getName(), RefValue.of(1D))
+                .build();
+        JLimit contentBody = JLimitVsRefValue.builder(HttpResponseJSONContentBodyValidatorProvider.getName(), RefValue.of(1D))
+                .build();
+        List<JLimit> limits = Arrays.asList(successRateLimit, failRateLimit, contentTypeHeader, contentBody);
 
         JLoadProfileUsers groupOne = JLoadProfileUsers.builder(NumberOfUsers.of(userGroupOneVirtualUsers))
                 .build();
@@ -139,8 +173,12 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
         JTerminationCriteria termination2 = JTerminationCriteriaBackground.getInstance();
 
         return new ArrayList<JLoadTest>(){{
-                add(JLoadTest.builder(Id.of("load_test_3_1"), definition, loadProfile1, termination1).build());
-                add(JLoadTest.builder(Id.of("load_test_3_2"), definition, loadProfile2, termination2).build());
+                add(JLoadTest.builder(Id.of("load_test_3_1"), definition, loadProfile1, termination1)
+                        .withLimits(limits)
+                        .build());
+                add(JLoadTest.builder(Id.of("load_test_3_2"), definition, loadProfile2, termination2)
+                        .withLimits(limits)
+                        .build());
         }};
     }
 }

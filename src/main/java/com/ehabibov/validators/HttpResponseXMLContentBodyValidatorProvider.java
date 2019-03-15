@@ -1,25 +1,21 @@
 package com.ehabibov.validators;
 
+import com.ehabibov.util.ContentWellnessValidator;
 import com.griddynamics.jagger.coordinator.NodeContext;
 import com.griddynamics.jagger.engine.e1.collector.ResponseValidator;
 import com.griddynamics.jagger.engine.e1.collector.ResponseValidatorProvider;
 import com.griddynamics.jagger.invoker.v2.JHttpEndpoint;
 import com.griddynamics.jagger.invoker.v2.JHttpQuery;
 import com.griddynamics.jagger.invoker.v2.JHttpResponse;
-import org.springframework.http.MediaType;
 
-/** Validator checks that response's application media type contains expected one which provided in constructor.
- */
-public class HttpResponseContentTypeHeaderValidatorProvider implements ResponseValidatorProvider {
+/** Validator checks that response body is a valid XML */
 
-    private MediaType mediaType;
+public class HttpResponseXMLContentBodyValidatorProvider implements ResponseValidatorProvider {
 
-    private HttpResponseContentTypeHeaderValidatorProvider(MediaType mediaType) {
-        this.mediaType = mediaType;
-    }
+    private static final String name =  "XML response content type body validator";
 
-    public static HttpResponseContentTypeHeaderValidatorProvider of(MediaType mediaType) {
-        return new HttpResponseContentTypeHeaderValidatorProvider(mediaType);
+    public static String getName(){
+        return name;
     }
 
     @Override
@@ -28,12 +24,12 @@ public class HttpResponseContentTypeHeaderValidatorProvider implements ResponseV
 
             @Override
             public String getName() {
-                return String.format("%s response content type header validator", mediaType.getType());
+                return name;
             }
 
             @Override
             public boolean validate(JHttpQuery query, JHttpEndpoint endpoint, JHttpResponse result, long duration) {
-                return result.getHeaders().getContentType().includes(mediaType);
+                return ContentWellnessValidator.isValidXML((byte[]) result.getBody());
             }
         };
     }
