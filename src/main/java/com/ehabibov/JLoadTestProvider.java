@@ -1,6 +1,5 @@
 package com.ehabibov;
 
-import com.ehabibov.listeners.HttpResponseBodySizeInvocationListener;
 import com.ehabibov.queries.GetRequestQueryProvider;
 import com.ehabibov.queries.ResponseHeadersQueryProvider;
 import com.ehabibov.queries.XmlQueryProvider;
@@ -34,24 +33,24 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
         int users = Integer.valueOf(getTestPropertyValue("test.1.load.scenario.virtual.users"));
         int iterations = Integer.valueOf(getTestPropertyValue("test.1.load.scenario.termination.iterations"));
         long maxDuration = Long.valueOf(getTestPropertyValue("test.1.load.scenario.termination.max.duration.seconds"));
+        String string = getTestPropertyValue("test.1.load.scenario.response.validation.string");
 
         JTestDefinition definition = JTestDefinition.builder(Id.of("td1"), new EndpointsProvider(host))
                 .withQueryProvider(new GetRequestQueryProvider(endpoint))
                 .addValidator(JHttpResponseStatusValidatorProvider.of("2.."))
-                .addValidator(new HttpResponseJSONContentTypeHeaderValidatorProvider())
-                .addValidator(new HttpResponseJSONContentBodyValidatorProvider())
-                .addListener(new HttpResponseBodySizeInvocationListener())
+                .addValidator(new NotNullResponseValidatorProvider())
+                .addValidator(ContentResponseValidatorProvider.of(string))
                 .build();
 
         JLimit successRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_OK, RefValue.of(1D))
                 .build();
         JLimit failRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_FAILS, RefValue.of(0D))
                 .build();
-        JLimit contentTypeHeader = JLimitVsRefValue.builder(HttpResponseJSONContentTypeHeaderValidatorProvider.getName(), RefValue.of(1D))
+        JLimit responseNotNull = JLimitVsRefValue.builder(NotNullResponseValidatorProvider.getName(), RefValue.of(1D))
                 .build();
-        JLimit contentBody = JLimitVsRefValue.builder(HttpResponseJSONContentBodyValidatorProvider.getName(), RefValue.of(1D))
+        JLimit responseContent = JLimitVsRefValue.builder(ContentResponseValidatorProvider.getName(), RefValue.of(1D))
                 .build();
-        List<JLimit> limits = Arrays.asList(successRateLimit, failRateLimit, contentTypeHeader, contentBody);
+        List<JLimit> limits = Arrays.asList(successRateLimit, failRateLimit, responseNotNull, responseContent);
 
         JLoadProfile loadProfile = JLoadProfileInvocation.builder(InvocationCount.of(iterations), ThreadCount.of(users))
                 .build();
@@ -74,24 +73,24 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
         int invocationsDelay = Integer.valueOf(getTestPropertyValue("test.2.load.scenario.invocations.delay.millisecs"));
         int startDelta = Integer.valueOf(getTestPropertyValue("test.2.load.scenario.users.group.start.delay.delta.seconds"));
         long maxDuration = Long.valueOf(getTestPropertyValue("test.2.load.scenario.termination.max.duration.seconds"));
+        String string = getTestPropertyValue("test.2.load.scenario.response.validation.string");
 
         JTestDefinition definition = JTestDefinition.builder(Id.of("td2"), new EndpointsProvider(host))
                 .withQueryProvider(new XmlQueryProvider(endpoint))
                 .addValidator(JHttpResponseStatusValidatorProvider.of("2.."))
-                .addValidator(new HttpResponseXMLContentTypeHeaderValidatorProvider())
-                .addValidator(new HttpResponseXMLContentBodyValidatorProvider())
-                .addListener(new HttpResponseBodySizeInvocationListener())
+                .addValidator(new NotNullResponseValidatorProvider())
+                .addValidator(ContentResponseValidatorProvider.of(string))
                 .build();
 
         JLimit successRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_OK, RefValue.of(1D))
                 .build();
         JLimit failRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_FAILS, RefValue.of(0D))
                 .build();
-        JLimit contentTypeHeader = JLimitVsRefValue.builder(HttpResponseXMLContentTypeHeaderValidatorProvider.getName(), RefValue.of(1D))
+        JLimit responseNotNull = JLimitVsRefValue.builder(NotNullResponseValidatorProvider.getName(), RefValue.of(1D))
                 .build();
-        JLimit contentBody = JLimitVsRefValue.builder(HttpResponseXMLContentBodyValidatorProvider.getName(), RefValue.of(1D))
+        JLimit responseContent = JLimitVsRefValue.builder(ContentResponseValidatorProvider.getName(), RefValue.of(1D))
                 .build();
-        List<JLimit> limits = Arrays.asList(successRateLimit, failRateLimit, contentTypeHeader, contentBody);
+        List<JLimit> limits = Arrays.asList(successRateLimit, failRateLimit, responseNotNull, responseContent);
 
         JLoadProfileUsers userProfile1 = JLoadProfileUsers.builder(NumberOfUsers.of(users))
                 .withStartDelayInSeconds(startDelta)
@@ -132,21 +131,19 @@ public class JLoadTestProvider extends JaggerPropertiesProvider {
         JTestDefinition definition = JTestDefinition.builder(Id.of("td3"), new EndpointsProvider(host))
                 .withQueryProvider(new ResponseHeadersQueryProvider(endpoint, datasource))
                 .addValidator(JHttpResponseStatusValidatorProvider.of("2.."))
-                .addValidator(new HttpResponseJSONContentTypeHeaderValidatorProvider())
-                .addValidator(new HttpResponseJSONContentBodyValidatorProvider())
+                .addValidator(new NotNullResponseValidatorProvider())
                 .addValidator(HttpQueryValidatorProvider.of(datasource))
-                .addListener(new HttpResponseBodySizeInvocationListener())
                 .build();
 
         JLimit successRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_OK, RefValue.of(1D))
                 .build();
         JLimit failRateLimit = JLimitVsRefValue.builder(JMetricName.PERF_SUCCESS_RATE_FAILS, RefValue.of(0D))
                 .build();
-        JLimit contentTypeHeader = JLimitVsRefValue.builder(HttpResponseJSONContentTypeHeaderValidatorProvider.getName(), RefValue.of(1D))
+        JLimit responseNotNull = JLimitVsRefValue.builder(NotNullResponseValidatorProvider.getName(), RefValue.of(1D))
                 .build();
-        JLimit contentBody = JLimitVsRefValue.builder(HttpResponseJSONContentBodyValidatorProvider.getName(), RefValue.of(1D))
+        JLimit responseContent = JLimitVsRefValue.builder(ContentResponseValidatorProvider.getName(), RefValue.of(1D))
                 .build();
-        List<JLimit> limits = Arrays.asList(successRateLimit, failRateLimit, contentTypeHeader, contentBody);
+        List<JLimit> limits = Arrays.asList(successRateLimit, failRateLimit, responseNotNull, responseContent);
 
         JLoadProfileUsers groupOne = JLoadProfileUsers.builder(NumberOfUsers.of(userGroupOneVirtualUsers))
                 .build();

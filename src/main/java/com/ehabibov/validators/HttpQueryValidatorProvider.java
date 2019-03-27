@@ -19,7 +19,7 @@ public class HttpQueryValidatorProvider implements ResponseValidatorProvider {
 
     private String datasource;
 
-    public HttpQueryValidatorProvider(String datasource) {
+    private HttpQueryValidatorProvider(String datasource) {
         this.datasource = datasource;
     }
 
@@ -54,6 +54,4 @@ public class HttpQueryValidatorProvider implements ResponseValidatorProvider {
             }
         };
     }
-
-
 }
